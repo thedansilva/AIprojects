@@ -1,6 +1,6 @@
-BEST POSSIBLE MOVE SCENARIOS:
-1. get the last marble from your move into your mancala to go again  (+3)
-    (-if player 1, sabotage player 2's first move as well (this may just work if the algorithm correctly sabotages and doesn't need to be hardcoded))
-2. get the last marble into an empty space on your side (steal) (+2)
-3. sabotage optimal opponent move (run first 2 steps, determine if any pit on our side has enough marbles to get in that spot, and sabotage) (+1)
-5. move marble on the rightmost side (default action) (0)
+          // ALGORITHM:
+          // first check to see if we can go again
+          // next check to see if we can steal
+          // next check to see if opponent can do either of these actions and block if possible)
+          // next check to see if we can get points moving the rightmost pit
+          // if nothing is optimal, move the rightmost pit
