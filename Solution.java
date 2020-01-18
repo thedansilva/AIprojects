@@ -7,7 +7,7 @@ public class Solution {
         if (i + p1Marbles[i] == 6) {
           //System.out.println("Position: " + i + ". Marbles in this position: " + p1Marbles[i]);
           //System.out.println("optimal turn is at position " + i);
-          return i;
+          return i + 1;
         }
       }
       return 0;
@@ -18,7 +18,7 @@ public class Solution {
         try {
           if (p1Marbles[i] != 0 && p1Marbles[p1Marbles[i] + i] == 0 && p2Marbles[p1Marbles[i] + i] != 0) {
             //System.out.println("Steal opprtunity found at position " + i);
-            return i;
+            return i + 1;
           }
         } catch (Exception e) {}
       }
@@ -30,7 +30,7 @@ public class Solution {
         if (i + p1Marbles[i] >= 6) {
           //System.out.println("Position: " + i + ". Marbles in this position: " + p1Marbles[i]);
           //System.out.println("can score points at position " + i);
-          return i;
+          return i + 1;
         }
       }
       return 0;
@@ -64,7 +64,7 @@ public class Solution {
         if(x + positions[x] >= (blockCheck + 7) && blockable != true) {
           blockable = true;
           //System.out.println("Move at position " + x + " to block");
-          return x;
+          return x + 1;
         }
       }
     }
@@ -73,7 +73,7 @@ public class Solution {
     public static int leastOptimal(int[] p1Marbles) {
       for (int x = 0; x < 6; x++){
         if (p1Marbles[x] != 0) {
-          return x;
+          return x + 1;
         }
       }
       return 0;
