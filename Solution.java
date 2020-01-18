@@ -1,4 +1,4 @@
-import java.io.*; 
+import java.io.*;
 import java.util.*;
 
 public class Solution {
@@ -86,6 +86,7 @@ public class Solution {
         int[] player2Marbles = new int[6];
         int[] playerMarbles = new int [6];
         int[] botMarbles = new int [6];
+
         Scanner in = new Scanner(System.in);
         playerID = in.nextInt();
         player1Mancala = in.nextInt();
@@ -101,7 +102,7 @@ public class Solution {
         player1Mancala = 0;
         int[] player1Marbles = {4, 4, 4, 4, 4, 4};
         int[] player2Marbles = {4, 4, 4, 4, 4, 4};
-        THE ABOVE IS FOR DEBUG.
+        // THE ABOVE IS FOR DEBUG.
         */
         boolean moveMade = false;
         switch (playerID) {
@@ -127,6 +128,15 @@ public class Solution {
             moveMade = true;
           }
 
+          // next check to see if we can get points moving the rightmost pit
+          //System.out.println("checking for points");
+          int pointsCheck = checkPoints(playerMarbles);
+          if ((pointsCheck) != 0 && moveMade == false) {
+            System.out.print(pointsCheck);
+            //System.out.println(" checkPoints");
+            moveMade = true;
+          }
+
           // next check to see if we can steal
           //System.out.println("checking for steal");
           int stealCheck = checkSteal(playerMarbles, botMarbles);
@@ -145,21 +155,14 @@ public class Solution {
             moveMade = true;
           }
 
-          // next check to see if we can get points moving the rightmost pit
-          //System.out.println("checking for points");
-          int pointsCheck = checkPoints(playerMarbles);
-          if ((pointsCheck) != 0 && moveMade == false) {
-            System.out.print(pointsCheck);
-            //System.out.println(" checkPoints");
-            moveMade = true;
-          }
+
           // if nothing is optimal, move the leftmost pit
 
           //System.out.println("Have to do least optimal move - moving first pit to not be empty.");
           if (moveMade == false) {
-          System.out.print(leastOptimal(playerMarbles));
-          //System.out.println(" leastOptimal");
-          moveMade = true;
+            System.out.print(leastOptimal(playerMarbles));
+            //System.out.println(" leastOptimal");
+            moveMade = true;
           }
         }
     }
