@@ -2,167 +2,118 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-    public static int checkFreeTurn(int[] p1Marbles) {
-      for (int i = 0; i < 6; i++) {
-        if (i + p1Marbles[i] == 6) {
-          //System.out.println("Position: " + i + ". Marbles in this position: " + p1Marbles[i]);
-          //System.out.println("optimal turn is at position " + i);
-          return i + 1;
-        }
+    public static int checkZero(int[] p1Marbles, int x) {
+      if (p1Marbles[x] == 0) {
+        return -99999;
       }
       return 0;
     }
+    public static int checkFreeTurn(int[] p1Marbles, int x) {
+        if (x + p1Marbles[x] == 6) {
+          return 100;
+        }
+      return 0;
+    }
 
-    public static int checkSteal(int[] p1Marbles, int[] p2Marbles) {
-      for (int i = 0; i < 6; i++) {
+    public static int checkSteal(int[] p1Marbles, int[] p2Marbles, int x) {
         try {
-          if (p1Marbles[i] != 0 && p1Marbles[p1Marbles[i] + i] == 0 && p2Marbles[p1Marbles[i] + i] != 0) {
-            //System.out.println("Steal opprtunity found at position " + i);
-            return i + 1;
+          if (p1Marbles[p1Marbles[x] + x] == 0 && p2Marbles[p1Marbles[x] + x] != 0) {
+            return 10;
           }
         } catch (Exception e) {}
-      }
       return 0;
     }
 
-    public static int checkPoints(int[] p1Marbles) {
-      for (int i = 0; i < 6; i++) {
-        if (i + p1Marbles[i] >= 6) {
-          //System.out.println("Position: " + i + ". Marbles in this position: " + p1Marbles[i]);
-          //System.out.println("can score points at position " + i);
-          return i + 1;
+    public static int checkPoints(int[] p1Marbles, int x) {
+        if (x + p1Marbles[x] >= 6) {
+          return 1;
         }
-      }
       return 0;
     }
 
-    public static int checkBlockOptimal(int[] p1Marbles, int[] p2Marbles) {
-      int freeTurn = checkFreeTurn(p2Marbles);
-      int steal = checkSteal(p2Marbles, p1Marbles);
-      int[] positions = new int [14]; // placeholder for the position of the marbles at any given point.
-                                      // positions[0] and positions[7] are mancalas for players 1 and players 2 respectively.
-      int blockCheck = 0;
-      if (freeTurn != 0) {
-        //System.out.println("Opponent can get a free turn at position " + freeTurn);
-        blockCheck = freeTurn;
-      }
-      if (steal != 0) {
-        //System.out.println("Opponent can get a steal at position " + steal);
-        blockCheck = steal;
-      }
-      boolean blockable = false;
-      if(blockCheck != 0) {
-      for (int x = 0; x < 6; x++)
-        positions[x] = p1Marbles[x];
-      for (int x = 7; x < 13; x++)
-        positions[x] = p2Marbles[x-7];
-      for (int x = 0; x < positions.length; x++) {
-        //System.out.print(positions[x] + " ");
-      }
-      //System.out.println();
+    public static int checkBlockOptimal(int[] p1Marbles, int[] p2Marbles, int i) {
+      int[] p2Score = new int[6];
       for (int x = 0; x < 6; x++) {
-        if(x + positions[x] >= (blockCheck + 7) && blockable != true) {
-          blockable = true;
-          //System.out.println("Move at position " + x + " to block");
-          return x + 1;
+        p2Score[x] = checkZero(p2Marbles, x) + checkFreeTurn(p2Marbles, x) + checkSteal(p2Marbles, p1Marbles, x);
+      }
+      int bestMove = 0;
+      int position = 0;
+      for (int x = 0; x < 6; x++) {
+        if (p2Score[x] > bestMove) {
+          bestMove = p2Score[x];
+          position = x;
         }
       }
-    }
-      return 0;
-    }
-    public static int leastOptimal(int[] p1Marbles) {
-      for (int x = 0; x < 6; x++){
-        if (p1Marbles[x] != 0) {
-          return x + 1;
-        }
+      if (bestMove > 0) {
+          if (p1Marbles[i] != 0 && (p1Marbles[i] + i) >= (position + 7)) {
+            return 5;
+          }
       }
       return 0;
     }
     public static void main(String[] args) {
-        int playerID;
-        int player1Mancala;
-        int[] player1Marbles = new int[6];
-        int player2Mancala;
-        int[] player2Marbles = new int[6];
-        int[] playerMarbles = new int [6];
-        int[] botMarbles = new int [6];
 
         Scanner in = new Scanner(System.in);
-        playerID = in.nextInt();
-        player1Mancala = in.nextInt();
-        for (int i = 0; i < 6; i++) {
-          player1Marbles[i] = in.nextInt();
-        }
-        player2Mancala = in.nextInt();
-        for (int i = 0; i < 6; i++) {
-          player2Marbles[i] = in.nextInt();
-        }
-        /*
-        playerID = 1;
-        player1Mancala = 0;
-        int[] player1Marbles = {4, 4, 4, 4, 4, 4};
-        int[] player2Marbles = {4, 4, 4, 4, 4, 4};
-        // THE ABOVE IS FOR DEBUG.
-        */
-        boolean moveMade = false;
+        int playerID = in.nextInt();
+        int player1Mancala = in.nextInt();
+        int[] player1Marbles = new int[6];
+        int[] player2Marbles = new int[6];
+        int[] score = new int[6];
+        int[] playerMarbles = new int [6];
+        int[] botMarbles = new int [6];
+        int player2Mancala = 0;
         switch (playerID) {
           case 1:
-            //System.out.println("DEBUG: you are player 1.");
             playerMarbles = player1Marbles;
             botMarbles = player2Marbles;
+            for (int i = 0; i < 6; i++) {
+              player1Marbles[i] = in.nextInt();
+            }
+            player2Mancala = in.nextInt();
+            for (int i = 5; i >= 0; i--) {
+              player2Marbles[i] = in.nextInt();
+            }
             break;
           case 2:
-            //System.out.println("DEBUG: you are player 2.");
             playerMarbles = player2Marbles;
             botMarbles = player1Marbles;
+            for (int i = 5; i >= 0; i--) {
+              player1Marbles[i] = in.nextInt();
+            }
+            player2Mancala = in.nextInt();
+            for (int i = 0; i < 6; i++) {
+              player2Marbles[i] = in.nextInt();
+            }
             break;
           }
 
+
+/*
+          int playerID = 2;
+          int player1Mancala = 0;
+          int player2Mancala = 0;
+          int[] player1Marbles = {0, 0, 6, 3, 0, 0};
+          int[] player2Marbles = {0, 3, 0, 2, 0, 0};
+          //THE ABOVE IS FOR DEBUG.
+*/
+
+
+
           // ALGORITHM:
-          // first check to see if we can go again
-          //System.out.println("checking for free turn");
-          int freeCheck = checkFreeTurn(playerMarbles);
-          if (freeCheck != 0 && moveMade == false) {
-            System.out.print(freeCheck);
-            //System.out.println(" freeCheck");
-            moveMade = true;
+          for (int x = 0; x < 6; x++) {
+          score[x] = checkZero(playerMarbles, x) + checkFreeTurn(playerMarbles, x) + checkSteal(playerMarbles, botMarbles, x) + checkBlockOptimal(playerMarbles, botMarbles, x) + checkPoints(playerMarbles, x);
           }
 
-          // next check to see if we can get points moving the rightmost pit
-          //System.out.println("checking for points");
-          int pointsCheck = checkPoints(playerMarbles);
-          if ((pointsCheck) != 0 && moveMade == false) {
-            System.out.print(pointsCheck);
-            //System.out.println(" checkPoints");
-            moveMade = true;
+          for (int x = 0; x < 6; x++) {
+            //System.out.print(score[x] + " ");
           }
-
-          // next check to see if we can steal
-          //System.out.println("checking for steal");
-          int stealCheck = checkSteal(playerMarbles, botMarbles);
-          if (stealCheck != 0 && moveMade == false) {
-            System.out.print(stealCheck);
-            //System.out.println(" stealCheck");
-            moveMade = true;
-          }
-
-          // next check to see if opponent can do either of these actions and block if possible)
-          //System.out.println("checking for potential block");
-          int blockCheck = checkBlockOptimal(playerMarbles, botMarbles);
-          if ((blockCheck) != 0 && moveMade == false) {
-            System.out.print(blockCheck);
-            //System.out.println(" checkBlockOptimal");
-            moveMade = true;
-          }
-
-
-          // if nothing is optimal, move the leftmost pit
-
-          //System.out.println("Have to do least optimal move - moving first pit to not be empty.");
-          if (moveMade == false) {
-            System.out.print(leastOptimal(playerMarbles));
-            //System.out.println(" leastOptimal");
-            moveMade = true;
-          }
+          int bestScore = 0, bestMove = 0;
+          for (int x = 0; x < 6; x++) {
+              if (score[x] >= 0 && score[x] >= bestScore) {
+                bestScore = score[x];
+                bestMove = x;
+              }
+            }
+          System.out.println((bestMove+1));
         }
     }
