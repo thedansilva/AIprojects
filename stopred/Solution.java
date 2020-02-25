@@ -41,7 +41,8 @@ public class Solution {
     }
     @Override
     public int compareTo(Stock s2) {
-      return new Double(this.fullSlope()).compareTo(s2.fullSlope());
+      //return new Double(this.fullSlope()).compareTo(s2.fullSlope());
+      return (int)(this.movingAvg() - s2.movingAvg());
     }
     public void setOwned(int newOwned) {
       this.owned = newOwned;
@@ -56,6 +57,9 @@ public class Solution {
       }
       avg /= 4;
       return prices[4] - avg;
+    }
+    public double combinedAvg() {
+      return movingAvg() + fullSlope() / 2;
     }
 }
 
@@ -125,7 +129,7 @@ public class Solution {
         }
       } else {
         for (int i = 0; i < stocks.size(); i++) {
-          if (stocks.get(i).owned > 0 && (stocks.get(i).movingAvg() > 0 || stocks.get(i).prices[4] - stocks.get(i).priceBought >= 25)) {
+          if (stocks.get(i).owned > 0 && (stocks.get(i).combinedAvg() > 0 || stocks.get(i).price[4] - stocks.get(i).priceBought > 30)) {
             transactions.add(stocks.get(i).name + " SELL " + stocks.get(i).owned);
             stocks.get(i).setOwned(0);
           }
