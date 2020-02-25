@@ -49,6 +49,14 @@ public class Solution {
     public int getStockNum() {
       return this.stockNum;
     }
+    public double movingAvg() {
+      double avg = 0;
+      for (int x = 0; x < 4; x++) {
+        avg += prices[x];
+      }
+      avg /= 4;
+      return prices[4] - avg;
+    }
 }
 
 
@@ -116,22 +124,12 @@ public class Solution {
           }
         }
       } else {
-        for (int i = 0; i < 4; i++) { // get the top 4 stocks
-          if (stocks.get(i).owned > 0) {
-            // if our stock starts to fall in value, panic sell all of them
+        for (int i = 0; i < stocks.size(); i++) {
+          if (stocks.get(i).owned > 0 && (stocks.get(i).movingAvg() > 0 || stocks.get(i).prices[4] - stocks.get(i).priceBought >= 25)) {
             transactions.add(stocks.get(i).name + " SELL " + stocks.get(i).owned);
             stocks.get(i).setOwned(0);
           }
         }
-
-        for (int i = 4; i < stocks.size() - 1; i++) {
-          if (stocks.get(i).prices[4] - stocks.get(i).priceBought >= 25 && stocks.get(i).owned > 0) {
-            // if any other owned stocks show a significant price spike, sell all of them as well
-            transactions.add(stocks.get(i).name + " SELL " + stocks.get(i).owned);
-            stocks.get(i).setOwned(0);
-          }
-        }
-
           Collections.reverse(stocks); // reverse again. now we have regular list of lowest to high.
           if (stocks.get(0).owned <= 0 && m >= stocks.get(0).prices[4]) {
             for (double i = m; i > stocks.get(0).prices[4]; i -= stocks.get(0).prices[4]) { // continue to add lowest stocks to buy until we can't buy anymore
